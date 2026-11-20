@@ -1,7 +1,7 @@
 export const catalogueUrl =
 	"https://raw.githubusercontent.com/ONSdigital/onsvisualjournalism-backend/main/data.json";
 
-export function selectVisualisations(records, limit = 60) {
+export function selectVisualisations(records) {
 	if (!Array.isArray(records)) throw new Error("The catalogue must be an array.");
 
 	const publications = records.map((record) => {
@@ -23,6 +23,8 @@ export function selectVisualisations(records, limit = 60) {
 	const visualisations = [];
 	for (const publication of publications) {
 		for (const [index, visualisation] of publication.vis.entries()) {
+			const chartType = visualisation.chart_type?.trim();
+			if (!chartType || chartType === "undefined" || seen.has(chartType)) continue;
 			if (typeof visualisation.url !== "string" || !visualisation.url.trim()) {
 				throw new Error("A visualisation is missing its URL.");
 			}
@@ -36,15 +38,14 @@ export function selectVisualisations(records, limit = 60) {
 				throw new Error("A visualisation has an unsupported URL.");
 			}
 			url.protocol = "https:";
-			if (seen.has(url.href)) continue;
-			seen.add(url.href);
+			seen.add(chartType);
 			visualisations.push({
+				chartType,
 				url: url.href,
 				title: publication.title,
 				date: publication.date,
 				label: `${publication.title}, visualisation ${index + 1}`
 			});
-			if (visualisations.length === limit) return visualisations;
 		}
 	}
 	return visualisations;

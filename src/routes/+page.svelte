@@ -5,6 +5,9 @@
 
 	let { data } = $props();
 	let retrying = $state(false);
+	let selected = $state(null);
+	/** @type {HTMLDialogElement} */
+	let modal = $state();
 	const dateFormat = new Intl.DateTimeFormat("en-GB", {
 		day: "numeric",
 		month: "long",
@@ -20,6 +23,11 @@
 			retrying = false;
 		}
 	}
+
+	function openVisualisation(visualisation) {
+		selected = visualisation;
+		modal.showModal();
+	}
 </script>
 
 <Header compact width="full" />
@@ -28,7 +36,9 @@
 		<div class="gallery-heading">
 			<h1>ONS visualisations</h1>
 			{#if !data.loading && !data.error}
-				<p class="gallery-count">Latest {data.visualisations.length}</p>
+				<p class="gallery-count">
+					Latest example of each chart type ({data.visualisations.length})
+				</p>
 			{/if}
 		</div>
 
@@ -45,17 +55,16 @@
 			<Notice><p>No visualisations are currently available.</p></Notice>
 		{:else}
 			<div class="gallery">
-				{#each data.visualisations as visualisation (visualisation.url)}
+				{#each data.visualisations as visualisation (visualisation.chartType)}
 					<article class="visualisation">
 						<VisualisationPreview url={visualisation.url} title={visualisation.label} />
-						<h2>
-							<a href={visualisation.url} aria-label={visualisation.label}>
-								{visualisation.title}
-							</a>
-						</h2>
-						<time datetime={visualisation.date}>
-							{dateFormat.format(new Date(visualisation.date))}
-						</time>
+						<button
+							class="preview-trigger"
+							type="button"
+							aria-label={`Open ${visualisation.label}`}
+							aria-haspopup="dialog"
+							onclick={() => openVisualisation(visualisation)}
+						></button>
 					</article>
 				{/each}
 			</div>
@@ -70,6 +79,32 @@
 	</Container>
 </Main>
 <Footer compact width="full" />
+
+<dialog
+	bind:this={modal}
+	class="visualisation-modal"
+	aria-label={selected?.label ?? "Visualisation"}
+	onclose={() => {
+		if (!modal.open) selected = null;
+	}}
+	onkeydown={(event) => {
+		if (event.key === "Escape") {
+			event.preventDefault();
+			modal.close();
+		}
+	}}
+>
+	<div class="modal-toolbar">
+		<Button variant="secondary" onClick={() => modal.close()}>Close visualisation</Button>
+	</div>
+	<div class="modal-content">
+		{#if selected}
+			{#key selected.chartType}
+				<VisualisationPreview url={selected.url} title={selected.label} preview={false} />
+			{/key}
+		{/if}
+	</div>
+</dialog>
 
 <style>
 	.gallery-heading {
@@ -99,7 +134,56 @@
 	}
 
 	.visualisation {
+		position: relative;
 		min-width: 0;
+		box-shadow: 3px 3px 3px 3px #ccc;
+	}
+
+	.preview-trigger {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		border: 0;
+		padding: 0;
+		background: transparent;
+		cursor: pointer;
+	}
+
+	.preview-trigger:focus-visible {
+		outline: 3px solid #206095;
+		outline-offset: 3px;
+	}
+
+	.visualisation-modal {
+		width: 700px;
+		max-width: calc(100vw - 32px);
+		max-height: min(700px, calc(100dvh - 32px));
+		margin: auto;
+		padding: 0;
+		border: 0;
+		overflow: hidden;
+		background: #fff;
+	}
+
+	.visualisation-modal[open] {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.visualisation-modal::backdrop {
+		background: rgb(0 0 0 / 50%);
+	}
+
+	.modal-toolbar {
+		display: flex;
+		justify-content: flex-end;
+		flex-shrink: 0;
+		padding: 8px;
+	}
+
+	.modal-content {
+		min-height: 0;
+		overflow: auto;
 	}
 
 	h2 {
@@ -134,7 +218,7 @@
 
 	@media (min-width: 1200px) {
 		.gallery {
-			grid-template-columns: repeat(5, minmax(0, 1fr));
+			grid-template-columns: repeat(4, minmax(0, 1fr));
 		}
 	}
 </style>
