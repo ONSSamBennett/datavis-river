@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<script>
+			// Force browser to add a trailing slash before the app hydrates
+			(function () {
+				var path = location.pathname;
+				if (!/\/$/.test(path) && !/\.[^/]+$/.test(path)) {
+					location.replace(path + "/" + location.search + location.hash);
+				}
+			})();
+		</script>
+		<link href="/datavis-river/_app/immutable/entry/start.DabuAO6I.js" rel="modulepreload">
+		<link href="/datavis-river/_app/immutable/chunks/B2TlD7Wt.js" rel="modulepreload">
+		<link href="/datavis-river/_app/immutable/chunks/Bwq2QuFL.js" rel="modulepreload">
+		<link href="/datavis-river/_app/immutable/chunks/BzAHuvrC.js" rel="modulepreload">
+		<link href="/datavis-river/_app/immutable/entry/app.CrfPvvIY.js" rel="modulepreload">
+		<link href="/datavis-river/_app/immutable/chunks/Dkj15_TE.js" rel="modulepreload">
+		<link href="/datavis-river/_app/immutable/chunks/CVm1TpRo.js" rel="modulepreload">
+		<link href="/datavis-river/_app/immutable/chunks/DIO3frkn.js" rel="modulepreload">
+		<link href="/datavis-river/_app/immutable/chunks/CTcpPnDW.js" rel="modulepreload">
+		<link href="/datavis-river/_app/immutable/nodes/0.6g0nIiVI.js" rel="modulepreload">
+		<link href="/datavis-river/_app/immutable/chunks/Bza7ILzO.js" rel="modulepreload">
+		<link href="/datavis-river/_app/immutable/chunks/W4n3c-ZJ.js" rel="modulepreload">
+		
+		<link href="/datavis-river/_app/immutable/assets/0.DW0zHPj9.css" rel="stylesheet">
+	</head>
+	<body>
+		<div id="svelte">
+			<script>
+				{
+					__sveltekit_d968kx = {
+						base: "/datavis-river",
+						assets: "/datavis-river"
+					};
+
+					const element = document.currentScript.parentElement;
+
+					Promise.all([
+						import("/datavis-river/_app/immutable/entry/start.DabuAO6I.js"),
+						import("/datavis-river/_app/immutable/entry/app.CrfPvvIY.js")
+					]).then(([kit, app]) => {
+						kit.start(app, element);
+					});
+				}
+			</script>
+		</div>
+	</body>
+</html>
