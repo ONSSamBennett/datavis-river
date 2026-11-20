@@ -1,4 +1,9 @@
 /* Use this file for app specific CSS and overrides */
+body {
+	max-width: 1400px;
+	margin-inline: auto;
+}
+
 .placeholder {
 	background: var(--ons-color-grey-10);
 	padding: 12px;

@@ -1,5 +1,15 @@
 # sveltekit-starter
 
+## Visualisation gallery
+
+The gallery shows one latest visualisation per defined `chart_type` from the
+[ONS visualisation catalogue](https://github.com/ONSdigital/onsvisualjournalism-backend).
+Selection uses the publication's `release_date`, with the first catalogue entry winning
+when dates tie. Cards are ordered newest-first, with no overall limit.
+Missing, null, blank and literal `"undefined"` chart types are ignored.
+The page body is centred with a maximum width of 1400px. The gallery uses four columns
+on wide screens, fewer on smaller screens, and a light shadow on each card.
+
 Starter page templates using the [ONS svelte-components library](https://github.com/ONSdigital/svelte-components/).
 
 **[→ View live demo](https://onsdigital.github.io/sveltekit-starter/)**

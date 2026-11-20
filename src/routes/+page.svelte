@@ -1,47 +1,135 @@
 <script>
-	import { pageUrl } from "$lib/paths.js";
-	import { Header, Main, Section, Grid, Card, Footer } from "@onsvisual/svelte-components";
+	import { invalidate } from "$app/navigation";
+	import { Button, Container, Footer, Header, Main, Notice } from "@onsvisual/svelte-components";
+	import VisualisationPreview from "$lib/VisualisationPreview.svelte";
+
+	let { data } = $props();
+	let retrying = $state(false);
+	const dateFormat = new Intl.DateTimeFormat("en-GB", {
+		day: "numeric",
+		month: "long",
+		year: "numeric",
+		timeZone: "UTC"
+	});
+
+	async function retry() {
+		retrying = true;
+		try {
+			await invalidate("app:catalogue");
+		} finally {
+			retrying = false;
+		}
+	}
 </script>
 
-<Header title="Svelte Kit starter templates" />
-
+<Header compact width="full" />
 <Main>
-	<Section marginTop={true}>
-		<p>
-			Select a template below to preview. These templates are created using the <a
-				href="https://github.com/ONSdigital/svelte-components/">ONS svelte-components library</a
-			>. To use them in Svelte Kit projects, follow the
-			<a href="https://github.com/ONSdigital/sveltekit-starter/">guidance in this readme</a>.
-		</p>
-	</Section>
+	<Container width="full" marginTop marginBottom>
+		<div class="gallery-heading">
+			<h1>ONS visualisations</h1>
+			{#if !data.loading && !data.error}
+				<p class="gallery-count">
+					Latest example of each chart type ({data.visualisations.length})
+				</p>
+			{/if}
+		</div>
 
-	<Grid>
-		<Card title="Regular article" href={pageUrl("/article")} mode="featured" baseline>
-			An article page in a style that matches the ONS website.
-		</Card>
-		<Card title="Feature article" href={pageUrl("/feature")} mode="featured" baseline>
-			A full page template for scrollytelling or media-rich articles.
-		</Card>
-		<Card title="Embedded interactive" href={pageUrl("/embed")} mode="featured" baseline>
-			A template for interactive content to be embedded within an iframe.
-		</Card>
-		<Card title="Data page" href={pageUrl("/data")} mode="featured" baseline>
-			A page that loads data from a CSV file, with an area search, a chart, a table and a stat.
-		</Card>
-		<Card title="Interactive map" href={pageUrl("/map")} mode="featured" baseline>
-			A choropleth map in the style of Explore Local Statistics, with area and postcode search.
-		</Card>
-		<Card title="Page analytics" href={pageUrl("/analytics")} mode="featured" baseline>
-			The ONS cookie banner, and recording how people use a page with analytics events.
-		</Card>
-	</Grid>
+		{#if data.loading}
+			<p role="status">Loading visualisations...</p>
+		{:else if data.error}
+			<Notice mode="error">
+				<p role="alert">{data.error}</p>
+				<Button variant="secondary" onClick={retry} disabled={retrying}>
+					{retrying ? "Loading..." : "Try again"}
+				</Button>
+			</Notice>
+		{:else if data.visualisations.length === 0}
+			<Notice><p>No visualisations are currently available.</p></Notice>
+		{:else}
+			<div class="gallery">
+				{#each data.visualisations as visualisation (visualisation.chartType)}
+					<article class="visualisation">
+						<VisualisationPreview url={visualisation.url} title={visualisation.label} />
+					</article>
+				{/each}
+			</div>
+		{/if}
 
-	<Section>
-		<p>
-			For more documentation and usage examples for the ONS svelte-components library, you can visit
-			the <a href="https://onsdigital.github.io/svelte-components/">Storybook pages</a>.
+		<noscript><p>Enable JavaScript to load the latest visualisations.</p></noscript>
+		<p class="source">
+			Source: <a href="https://github.com/ONSdigital/onsvisualjournalism-backend">
+				Office for National Statistics visualisation catalogue
+			</a>
 		</p>
-	</Section>
+	</Container>
 </Main>
+<Footer compact width="full" />
 
-<Footer compact />
+<style>
+	.gallery-heading {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		gap: 8px 24px;
+		margin-bottom: 24px;
+	}
+
+	h1 {
+		margin: 0;
+		font-size: 28px;
+	}
+
+	.gallery-count {
+		margin: 0;
+		color: #595959;
+		font-size: 16px;
+	}
+
+	.gallery {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 28px 16px;
+	}
+
+	.visualisation {
+		min-width: 0;
+		box-shadow: 3px 3px 3px 3px #ccc;
+	}
+
+	h2 {
+		margin: 12px 0 6px;
+		font-size: 16px;
+		line-height: 1.4;
+		overflow-wrap: anywhere;
+	}
+
+	time {
+		display: block;
+		color: #595959;
+		font-size: 14px;
+	}
+
+	.source {
+		margin-top: 32px;
+		font-size: 14px;
+	}
+
+	@media (min-width: 480px) {
+		.gallery {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	@media (min-width: 768px) {
+		.gallery {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+
+	@media (min-width: 1200px) {
+		.gallery {
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+		}
+	}
+</style>
