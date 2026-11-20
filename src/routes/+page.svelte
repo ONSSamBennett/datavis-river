@@ -28,9 +28,7 @@
 		<div class="gallery-heading">
 			<h1>ONS visualisations</h1>
 			{#if !data.loading && !data.error}
-				<p class="gallery-count">
-					Latest example of each chart type ({data.visualisations.length})
-				</p>
+				<p class="gallery-count">Latest {data.visualisations.length}</p>
 			{/if}
 		</div>
 
@@ -47,9 +45,17 @@
 			<Notice><p>No visualisations are currently available.</p></Notice>
 		{:else}
 			<div class="gallery">
-				{#each data.visualisations as visualisation (visualisation.chartType)}
+				{#each data.visualisations as visualisation (visualisation.url)}
 					<article class="visualisation">
 						<VisualisationPreview url={visualisation.url} title={visualisation.label} />
+						<h2>
+							<a href={visualisation.url} aria-label={visualisation.label}>
+								{visualisation.title}
+							</a>
+						</h2>
+						<time datetime={visualisation.date}>
+							{dateFormat.format(new Date(visualisation.date))}
+						</time>
 					</article>
 				{/each}
 			</div>
@@ -94,7 +100,6 @@
 
 	.visualisation {
 		min-width: 0;
-		box-shadow: 3px 3px 3px 3px #ccc;
 	}
 
 	h2 {
@@ -129,7 +134,7 @@
 
 	@media (min-width: 1200px) {
 		.gallery {
-			grid-template-columns: repeat(4, minmax(0, 1fr));
+			grid-template-columns: repeat(5, minmax(0, 1fr));
 		}
 	}
 </style>

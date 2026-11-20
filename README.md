@@ -9,6 +9,10 @@ when dates tie. Cards are ordered newest-first, with no overall limit.
 Missing, null, blank and literal `"undefined"` chart types are ignored.
 The page body is centred with a maximum width of 1400px. The gallery uses four columns
 on wide screens, fewer on smaller screens, and a light shadow on each card.
+Click a preview, or focus it and press Enter or Space, to open an interactive modal.
+Its iframe is 700px wide at 100% scale. The modal is at most 700px tall (or smaller
+to fit the viewport), with scrolling for taller content and horizontal scrolling
+on narrow screens. Close it using the close button or Escape.
 
 Starter page templates using the [ONS svelte-components library](https://github.com/ONSdigital/svelte-components/).
 
