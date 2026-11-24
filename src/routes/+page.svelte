@@ -57,7 +57,7 @@
 			<div class="gallery">
 				{#each data.visualisations as visualisation (visualisation.chartType)}
 					<article class="visualisation">
-						<VisualisationPreview url={visualisation.url} title={visualisation.label} />
+						<VisualisationPreview url={visualisation.screenshotUrl} title={visualisation.label} />
 						<button
 							class="preview-trigger"
 							type="button"
@@ -100,7 +100,7 @@
 	<div class="modal-content">
 		{#if selected}
 			{#key selected.chartType}
-				<VisualisationPreview url={selected.url} title={selected.label} preview={false} />
+				<VisualisationPreview url={selected.screenshotUrl} title={selected.label} preview={false} />
 			{/key}
 		{/if}
 	</div>

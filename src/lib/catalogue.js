@@ -1,8 +1,19 @@
 export const catalogueUrl =
 	"https://raw.githubusercontent.com/ONSdigital/onsvisualjournalism-backend/main/data.json";
+export const screenshotsUrl =
+	"https://raw.githubusercontent.com/ONSdigital/onsvisualjournalism-backend/main/screenshots/";
+export const screenshotIndexUrl = `${screenshotsUrl}index.json`;
 
-export function selectVisualisations(records) {
+export async function selectVisualisations(records, screenshotIndex, isScreenshotValid) {
 	if (!Array.isArray(records)) throw new Error("The catalogue must be an array.");
+	if (
+		screenshotIndex?.version !== 1 ||
+		!screenshotIndex.charts ||
+		typeof screenshotIndex.charts !== "object" ||
+		Array.isArray(screenshotIndex.charts)
+	) {
+		throw new Error("The screenshot index is invalid.");
+	}
 
 	const publications = records.map((record) => {
 		const date = record.release_date?.slice(0, 10);
@@ -20,6 +31,7 @@ export function selectVisualisations(records) {
 	publications.sort((first, second) => second.date.localeCompare(first.date));
 
 	const seen = new Set();
+	const screenshots = new Map();
 	const visualisations = [];
 	for (const publication of publications) {
 		for (const [index, visualisation] of publication.vis.entries()) {
@@ -37,11 +49,24 @@ export function selectVisualisations(records) {
 			) {
 				throw new Error("A visualisation has an unsupported URL.");
 			}
+			const screenshot = screenshotIndex.charts[url.href];
+			if (
+				!screenshot?.last_success ||
+				typeof screenshot.filename !== "string" ||
+				!/^[a-z0-9][a-z0-9._-]*\.jpg$/i.test(screenshot.filename)
+			)
+				continue;
+			const screenshotUrl = `${screenshotsUrl}${screenshot.filename}`;
+			if (!screenshots.has(screenshotUrl)) {
+				screenshots.set(screenshotUrl, await isScreenshotValid(screenshotUrl));
+			}
+			if (!screenshots.get(screenshotUrl)) continue;
 			url.protocol = "https:";
 			seen.add(chartType);
 			visualisations.push({
 				chartType,
 				url: url.href,
+				screenshotUrl,
 				title: publication.title,
 				date: publication.date,
 				label: `${publication.title}, visualisation ${index + 1}`
