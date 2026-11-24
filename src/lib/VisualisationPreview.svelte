@@ -1,8 +1,8 @@
 <script>
-	let { url, title, preview = true } = $props();
+	let { url, title } = $props();
 </script>
 
-<div class:preview>
+<div class="preview">
 	<img src={url} alt={title} decoding="async" />
 </div>
 
@@ -20,11 +20,5 @@
 		display: block;
 		width: 100%;
 		height: auto;
-	}
-
-	.preview img {
-		height: 100%;
-		object-fit: contain;
-		object-position: top;
 	}
 </style>

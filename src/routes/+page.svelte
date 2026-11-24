@@ -1,6 +1,14 @@
 <script>
 	import { invalidate } from "$app/navigation";
-	import { Button, Container, Footer, Header, Main, Notice } from "@onsvisual/svelte-components";
+	import {
+		Button,
+		Container,
+		EmbedParent,
+		Footer,
+		Header,
+		Main,
+		Notice
+	} from "@onsvisual/svelte-components";
 	import VisualisationPreview from "$lib/VisualisationPreview.svelte";
 
 	let { data } = $props();
@@ -100,7 +108,16 @@
 	<div class="modal-content">
 		{#if selected}
 			{#key selected.chartType}
-				<VisualisationPreview url={selected.screenshotUrl} title={selected.label} preview={false} />
+				<div class="embed-frame">
+					<EmbedParent
+						href={selected.url}
+						title={selected.label}
+						onLoad={({ pymParent }) => {
+							pymParent.iframe.height = "1400";
+							pymParent.sendMessage("width", "700");
+						}}
+					/>
+				</div>
 			{/key}
 		{/if}
 	</div>
@@ -184,6 +201,17 @@
 	.modal-content {
 		min-height: 0;
 		overflow: auto;
+	}
+
+	.embed-frame {
+		width: 700px;
+	}
+
+	.embed-frame :global(iframe) {
+		display: block;
+		width: 100%;
+		max-width: none;
+		border: 0;
 	}
 
 	h2 {

@@ -13,10 +13,13 @@ when dates tie. Cards are ordered newest-first, with no overall limit.
 Missing, null, blank and literal `"undefined"` chart types are ignored.
 The page body is centred with a maximum width of 1400px. The gallery uses four columns
 on wide screens, fewer on smaller screens, and a light shadow on each card.
-Cards display the full screenshot without cropping. Click a preview, or focus it and
-press Enter or Space, to open the enlarged screenshot. The modal is at most 700px wide
-and 700px tall (or smaller to fit the viewport), with scrolling for taller images.
-No chart iframes are loaded. Close it using the close button or Escape.
+Screenshots fill each square card's width, keeping their original proportions and
+cropping any overflow at the bottom. Click a preview, or focus it and
+press Enter or Space, to open the interactive embedded visualisation. The iframe is
+loaded only while the modal is open and remains 700px wide at full scale. The modal
+is at most 700px wide and 700px tall (or smaller to fit the viewport), with scrolling
+for taller charts and horizontal scrolling on narrow screens.
+Close it using the close button or Escape; closing removes the iframe.
 
 Starter page templates using the [ONS svelte-components library](https://github.com/ONSdigital/svelte-components/).
 
