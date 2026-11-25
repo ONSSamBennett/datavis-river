@@ -20,21 +20,7 @@ export async function load({ fetch, depends }) {
 				return response.json();
 			})
 		);
-		const visualisations = await selectVisualisations(records, screenshotIndex, async (url) => {
-			const response = await fetch(url, { signal });
-			if (response.status === 404) return false;
-			if (!response.ok) throw new Error(`Screenshot request failed: ${response.status}`);
-			const blob = await response.blob();
-			if (blob.type !== "image/jpeg") return false;
-			try {
-				const image = await createImageBitmap(blob);
-				image.close();
-				return true;
-			} catch (error) {
-				if (error instanceof DOMException && error.name === "InvalidStateError") return false;
-				throw error;
-			}
-		});
+		const visualisations = selectVisualisations(records, screenshotIndex);
 		return { ...metadata, visualisations, loading: false, error: null };
 	} catch {
 		return {

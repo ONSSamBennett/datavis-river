@@ -2,15 +2,18 @@
 
 ## Visualisation gallery
 
-The gallery shows the newest visualisation with a valid JPG per defined `chart_type` from the
+The gallery shows all visualisations with an indexed JPG from the
 [ONS visualisation catalogue](https://github.com/ONSdigital/onsvisualjournalism-backend).
 Screenshots are joined by absolute visualisation URL using the backend's
 `screenshots/index.json`, not guessed from filenames. Only entries with a successful
-capture and a loadable JPEG are eligible; missing or invalid images are skipped in favour
-of an older example of the same type. Types without an available screenshot are omitted.
-Selection uses the publication's `release_date`, with the first catalogue entry winning
-when dates tie. Cards are ordered newest-first, with no overall limit.
-Missing, null, blank and literal `"undefined"` chart types are ignored.
+capture and a safe JPG filename are eligible. Chart type does not affect selection.
+Cards are ordered by the publication's `release_date`, newest-first, with no overall limit.
+Catalogue and visualisation order are preserved when dates tie.
+Each preview uses the ONS `LazyLoad` component to add its image to the DOM within
+200px of the viewport; the gallery does not download or validate every image up front.
+Indexed image dimensions reserve responsive placeholder space
+before loading (or a 700 by 600 placeholder if dimensions are unavailable).
+An unavailable image displays a message, and its interactive visualisation can still be opened.
 The page body is centred with a maximum width of 1400px. The gallery uses equal-width
 masonry columns: one below 480px, two from 480px, three from 768px and four from 1200px.
 Screenshots fill their card's width at their natural proportions, without cropping,

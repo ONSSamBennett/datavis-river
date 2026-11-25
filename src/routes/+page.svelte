@@ -46,7 +46,7 @@
 			<h1>ONS visualisations</h1>
 			{#if !data.loading && !data.error}
 				<p class="gallery-count">
-					Latest example of each chart type ({data.visualisations.length})
+					All visualisations, newest first ({data.visualisations.length})
 				</p>
 			{/if}
 		</div>
@@ -64,9 +64,14 @@
 			<Notice><p>No visualisations are currently available.</p></Notice>
 		{:else}
 			<div class="gallery" use:masonry={data.visualisations}>
-				{#each data.visualisations as visualisation (visualisation.chartType)}
+				{#each data.visualisations as visualisation (visualisation)}
 					<article class="visualisation">
-						<VisualisationPreview url={visualisation.screenshotUrl} title={visualisation.label} />
+						<VisualisationPreview
+							url={visualisation.screenshotUrl}
+							title={visualisation.label}
+							width={visualisation.width}
+							height={visualisation.height}
+						/>
 						<button
 							class="preview-trigger"
 							type="button"
@@ -108,7 +113,7 @@
 	</div>
 	<div class="modal-content">
 		{#if selected}
-			{#key selected.chartType}
+			{#key selected}
 				<div class="embed-frame">
 					<EmbedParent
 						href={selected.url}

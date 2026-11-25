@@ -4,7 +4,7 @@ export const screenshotsUrl =
 	"https://raw.githubusercontent.com/ONSdigital/onsvisualjournalism-backend/main/screenshots/";
 export const screenshotIndexUrl = `${screenshotsUrl}index.json`;
 
-export async function selectVisualisations(records, screenshotIndex, isScreenshotValid) {
+export function selectVisualisations(records, screenshotIndex) {
 	if (!Array.isArray(records)) throw new Error("The catalogue must be an array.");
 	if (
 		screenshotIndex?.version !== 1 ||
@@ -30,13 +30,9 @@ export async function selectVisualisations(records, screenshotIndex, isScreensho
 	});
 	publications.sort((first, second) => second.date.localeCompare(first.date));
 
-	const seen = new Set();
-	const screenshots = new Map();
 	const visualisations = [];
 	for (const publication of publications) {
 		for (const [index, visualisation] of publication.vis.entries()) {
-			const chartType = visualisation.chart_type?.trim();
-			if (!chartType || chartType === "undefined" || seen.has(chartType)) continue;
 			if (typeof visualisation.url !== "string" || !visualisation.url.trim()) {
 				throw new Error("A visualisation is missing its URL.");
 			}
@@ -57,16 +53,15 @@ export async function selectVisualisations(records, screenshotIndex, isScreensho
 			)
 				continue;
 			const screenshotUrl = `${screenshotsUrl}${screenshot.filename}`;
-			if (!screenshots.has(screenshotUrl)) {
-				screenshots.set(screenshotUrl, await isScreenshotValid(screenshotUrl));
-			}
-			if (!screenshots.get(screenshotUrl)) continue;
 			url.protocol = "https:";
-			seen.add(chartType);
+			const { width, height } = screenshot.last_success;
+			const hasDimensions =
+				Number.isFinite(width) && width > 0 && Number.isFinite(height) && height > 0;
 			visualisations.push({
-				chartType,
 				url: url.href,
 				screenshotUrl,
+				width: hasDimensions ? width : undefined,
+				height: hasDimensions ? height : undefined,
 				title: publication.title,
 				date: publication.date,
 				label: `${publication.title}, visualisation ${index + 1}`
