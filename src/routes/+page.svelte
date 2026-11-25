@@ -42,15 +42,6 @@
 <Header compact width="full" />
 <Main>
 	<Container width="full" marginTop marginBottom>
-		<div class="gallery-heading">
-			<h1>ONS visualisations</h1>
-			{#if !data.loading && !data.error}
-				<p class="gallery-count">
-					All visualisations, newest first ({data.visualisations.length})
-				</p>
-			{/if}
-		</div>
-
 		{#if data.loading}
 			<p role="status">Loading visualisations...</p>
 		{:else if data.error}
