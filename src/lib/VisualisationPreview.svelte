@@ -12,6 +12,7 @@
 		background: #fff;
 		outline: 1px solid #d9d9d9;
 		outline-offset: -1px;
+		padding: 5px;
 	}
 
 	img {
