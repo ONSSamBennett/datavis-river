@@ -10,6 +10,7 @@
 		Notice
 	} from "@onsvisual/svelte-components";
 	import VisualisationPreview from "$lib/VisualisationPreview.svelte";
+	import { masonry } from "$lib/masonry.js";
 
 	let { data } = $props();
 	let retrying = $state(false);
@@ -62,7 +63,7 @@
 		{:else if data.visualisations.length === 0}
 			<Notice><p>No visualisations are currently available.</p></Notice>
 		{:else}
-			<div class="gallery">
+			<div class="gallery" use:masonry={data.visualisations}>
 				{#each data.visualisations as visualisation (visualisation.chartType)}
 					<article class="visualisation">
 						<VisualisationPreview url={visualisation.screenshotUrl} title={visualisation.label} />
@@ -145,8 +146,11 @@
 	}
 
 	.gallery {
+		--gallery-columns: 1;
+		position: relative;
 		display: grid;
-		grid-template-columns: minmax(0, 1fr);
+		grid-template-columns: repeat(var(--gallery-columns), minmax(0, 1fr));
+		align-items: start;
 		gap: 28px 16px;
 	}
 
@@ -234,19 +238,19 @@
 
 	@media (min-width: 480px) {
 		.gallery {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
+			--gallery-columns: 2;
 		}
 	}
 
 	@media (min-width: 768px) {
 		.gallery {
-			grid-template-columns: repeat(3, minmax(0, 1fr));
+			--gallery-columns: 3;
 		}
 	}
 
 	@media (min-width: 1200px) {
 		.gallery {
-			grid-template-columns: repeat(4, minmax(0, 1fr));
+			--gallery-columns: 4;
 		}
 	}
 </style>

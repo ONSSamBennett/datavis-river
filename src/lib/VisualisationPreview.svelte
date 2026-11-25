@@ -9,8 +9,6 @@
 <style>
 	.preview {
 		width: 100%;
-		aspect-ratio: 1;
-		overflow: hidden;
 		background: #fff;
 		outline: 1px solid #d9d9d9;
 		outline-offset: -1px;

@@ -11,10 +11,16 @@ of an older example of the same type. Types without an available screenshot are 
 Selection uses the publication's `release_date`, with the first catalogue entry winning
 when dates tie. Cards are ordered newest-first, with no overall limit.
 Missing, null, blank and literal `"undefined"` chart types are ignored.
-The page body is centred with a maximum width of 1400px. The gallery uses four columns
-on wide screens, fewer on smaller screens, and a light shadow on each card.
-Screenshots fill each square card's width, keeping their original proportions and
-cropping any overflow at the bottom. Click a preview, or focus it and
+The page body is centred with a maximum width of 1400px. The gallery uses equal-width
+masonry columns: one below 480px, two from 480px, three from 768px and four from 1200px.
+Screenshots fill their card's width at their natural proportions, without cropping,
+so cards have different heights. Cards retain their light shadows.
+Each chart is placed newest-first into the shortest column, with leftmost ties:
+the visual flow is approximately row-wise, not a strict row-based grid.
+The source and keyboard order remain newest-first; on mobile the single column reads
+strictly newest-to-oldest. Layout updates when images load or the gallery resizes.
+Before masonry is initialised, an ordinary natural-height grid is used.
+Click a preview, or focus it and
 press Enter or Space, to open the interactive embedded visualisation. The iframe is
 loaded only while the modal is open and remains 700px wide at full scale. The modal
 is at most 700px wide and 700px tall (or smaller to fit the viewport), with scrolling
